@@ -32,6 +32,7 @@ class _MyQRScreenState extends State<MyQRScreen> {
   String? selectedAccount;
   String debitAccountNumber ='';
   String debitAccountCurrency ='';
+  final TextEditingController _amountController = TextEditingController();
 
   @override
   void initState() {
@@ -43,6 +44,7 @@ class _MyQRScreenState extends State<MyQRScreen> {
 
   @override
   void dispose() {
+    _amountController.dispose();
     super.dispose();
   }
 
@@ -345,6 +347,8 @@ class _MyQRScreenState extends State<MyQRScreen> {
                     const SizedBox(height: 4),
                     _buildTextInputDropDownFieldRed(accounts),
                     const SizedBox(height: 12),
+                    _buildTextInputFieldGrayAmount(),
+                    const SizedBox(height: 12),
                     if (qrString != null)
                        Text(AppLocalizations.of(context)!.scanMyQrCodeForPayments),
                     const SizedBox(height: 12),
@@ -453,6 +457,71 @@ class _MyQRScreenState extends State<MyQRScreen> {
             child: Container(
               height: 1,
               color: Colors.red.shade900,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _onAmountSubmitted(String value) {
+    final parsed = double.tryParse(value);
+    if (parsed != null) {
+      setState(() {
+        amount = parsed;
+      });
+      _generateInitialQR();
+    } else if (value.isNotEmpty) {
+      _showSnackBar(context, "Invalid amount entered", Colors.red);
+    }
+  }
+
+  Widget _buildTextInputFieldGrayAmount() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Stack(
+        children: [
+          TextField(
+            controller: _amountController,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.amount,
+              hintText: "eg. 1000.00",
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              prefixIcon: Icon(Icons.attach_money, color: Colors.red.shade900),
+              suffixIcon: _amountController.text.isNotEmpty
+                  ? IconButton(
+                      icon: Icon(Icons.clear, color: Colors.red.shade900),
+                      onPressed: () {
+                        _amountController.clear();
+                        setState(() {
+                          amount = 0.0;
+                        });
+                        _generateInitialQR();
+                      },
+                    )
+                  : null,
+            ),
+            onEditingComplete: () {
+              _onAmountSubmitted(_amountController.text);
+              FocusScope.of(context).unfocus();
+            },
+          ),
+          Positioned(
+            left: 10,
+            right: 10,
+            bottom: 0,
+            child: Container(
+              height: 1,
+              color: Colors.grey.shade400,
             ),
           ),
         ],
