@@ -238,6 +238,7 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsB
                 postalCode: postalCode,
                 storeLabel: storeLabel,
                 currencyCode: currencyCode,
+                transactionAmount: transactionAmount,
               ),
             ),
           );

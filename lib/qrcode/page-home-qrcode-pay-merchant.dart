@@ -30,6 +30,7 @@ class MerchantPaymentScreen extends StatefulWidget {
   final String? postalCode;
   final String? storeLabel;
   final String? currencyCode;
+  final String? transactionAmount;
 
   const MerchantPaymentScreen({super.key,
     this.pointOfInitiationMethod,
@@ -48,6 +49,7 @@ class MerchantPaymentScreen extends StatefulWidget {
     this.postalCode,
     this.storeLabel,
     this.currencyCode,
+    this.transactionAmount,
 
   });
   @override
@@ -84,6 +86,12 @@ class _MerchantPaymentScreenState extends State<MerchantPaymentScreen> {
         _currentAccountCardIndexCurrency = balanceProvider.accounts[0].currency;
       }
     });
+
+    // Prefill amount from QR code
+    if (widget.transactionAmount != null && widget.transactionAmount!.isNotEmpty) {
+      _amountController.text = widget.transactionAmount!;
+      selectedAmount = double.tryParse(widget.transactionAmount!);
+    }
   }
 
   @override
