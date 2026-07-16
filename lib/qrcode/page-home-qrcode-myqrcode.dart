@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class _MyQRScreenState extends State<MyQRScreen> {
   String debitAccountNumber ='';
   String debitAccountCurrency ='';
   final TextEditingController _amountController = TextEditingController();
+  Timer? _amountDebounce;
 
   @override
   void initState() {
@@ -44,6 +46,7 @@ class _MyQRScreenState extends State<MyQRScreen> {
 
   @override
   void dispose() {
+    _amountDebounce?.cancel();
     _amountController.dispose();
     super.dispose();
   }
@@ -464,7 +467,26 @@ class _MyQRScreenState extends State<MyQRScreen> {
     );
   }
 
-  void _onAmountSubmitted(String value) {
+  void _applyAmountSilently(String value) {
+    final parsed = double.tryParse(value);
+    if (parsed != null && parsed != amount) {
+      setState(() {
+        amount = parsed;
+      });
+      _generateInitialQR();
+    }
+  }
+
+  void _onAmountChanged(String value) {
+    _amountDebounce?.cancel();
+    _amountDebounce = Timer(const Duration(milliseconds: 500), () {
+      _applyAmountSilently(value);
+    });
+    setState(() {});
+  }
+
+  void _onAmountConfirmed(String value) {
+    _amountDebounce?.cancel();
     final parsed = double.tryParse(value);
     if (parsed != null) {
       setState(() {
@@ -474,6 +496,7 @@ class _MyQRScreenState extends State<MyQRScreen> {
     } else if (value.isNotEmpty) {
       _showSnackBar(context, "Invalid amount entered", Colors.red);
     }
+    FocusScope.of(context).unfocus();
   }
 
   Widget _buildTextInputFieldGrayAmount() {
@@ -487,6 +510,7 @@ class _MyQRScreenState extends State<MyQRScreen> {
           TextField(
             controller: _amountController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            textInputAction: TextInputAction.done,
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context)!.amount,
               hintText: "eg. 1000.00",
@@ -498,22 +522,32 @@ class _MyQRScreenState extends State<MyQRScreen> {
               ),
               prefixIcon: Icon(Icons.attach_money, color: Colors.red.shade900),
               suffixIcon: _amountController.text.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(Icons.clear, color: Colors.red.shade900),
-                      onPressed: () {
-                        _amountController.clear();
-                        setState(() {
-                          amount = 0.0;
-                        });
-                        _generateInitialQR();
-                      },
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.check_circle, color: Colors.green.shade700),
+                          tooltip: "Confirm amount",
+                          onPressed: () => _onAmountConfirmed(_amountController.text),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.clear, color: Colors.red.shade900),
+                          tooltip: "Clear amount",
+                          onPressed: () {
+                            _amountDebounce?.cancel();
+                            _amountController.clear();
+                            setState(() {
+                              amount = 0.0;
+                            });
+                            _generateInitialQR();
+                          },
+                        ),
+                      ],
                     )
                   : null,
             ),
-            onEditingComplete: () {
-              _onAmountSubmitted(_amountController.text);
-              FocusScope.of(context).unfocus();
-            },
+            onChanged: _onAmountChanged,
+            onEditingComplete: () => _onAmountConfirmed(_amountController.text),
           ),
           Positioned(
             left: 10,
