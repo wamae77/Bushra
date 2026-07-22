@@ -15,7 +15,7 @@ import 'api_module.dart';
 
 class ApiService {
 
-  static const String _getTokenEndpoint = '/api/token';
+  static const String _getTokenEndpoint = '/oauth2/token';
   static String? _cachedToken;
   static DateTime? _tokenExpiry;
 
@@ -59,7 +59,7 @@ class ApiService {
       final scope = await DeviceIdentifier.getDeviceIdentifier();
       final headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic $authHeader',
+        'Authorization': 'Basic MzhrWjlGdUVMaUN5UHpGZnBEMWZsSXdGaEhzYTpCYVlqRHJiQ1BPUm5jTWVlRjh3WEtiR0lSdlVh',
       };
 
       final response = await client.post(

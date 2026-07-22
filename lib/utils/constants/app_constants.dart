@@ -13,8 +13,8 @@ class AppConstants {
   static const bool allowDeveloperMode = false; // Set to true if you want to allow dev mode
   static const bool allowExternalStorage = false; // Set to true to allow app installation to external storage
   // API
-  static const String baseUrl = 'https://ep.bbbank.so:8243';
-  static const String baseUrlToken = 'https://ep.bbbank.so:8243';
+  static const String baseUrl = 'https://gen-ms01.bbbank.so:43964';
+  static const String baseUrlToken = 'https://gen-ms01.bbbank.so:9443';
   // API Endpoints
   static const String endpointFetchProfileImage = "/bb/mobile/customer/getprofilephoto/1.0.0/";
   // App Keys
