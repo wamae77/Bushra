@@ -3,7 +3,7 @@ description: "Bushra Mobile Banking Application for Somalia."
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.28+48 # Android
+version: 1.0.29+49 # Android
 #version: 1.0.10+30 # IOS
 
 environment:
@@ -27,6 +27,9 @@ dependencies:
   path_provider: ^2.1.5
   path: ^1.9.1
   image_picker: ^1.2.0
+  # Direct refs so main.dart can opt into the Android system photo picker.
+  image_picker_android: ^0.8.13
+  image_picker_platform_interface: ^2.11.0
   local_auth: ^2.3.0
   app_settings: ^6.1.1
   intl: ^0.20.2
