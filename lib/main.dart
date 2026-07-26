@@ -25,6 +25,8 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 // import 'package:firebase_remote_config/firebase_remote_config.dart'; // Disabled
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:image_picker_android/image_picker_android.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,6 +40,12 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   //TODO - Initialize Provider in main.dart
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Use the Android system photo picker so we never request READ_MEDIA_IMAGES.
+  final imagePicker = ImagePickerPlatform.instance;
+  if (imagePicker is ImagePickerAndroid) {
+    imagePicker.useAndroidPhotoPicker = true;
+  }
 
   final localeProvider = LocaleProvider();
   await localeProvider.loadLocale();

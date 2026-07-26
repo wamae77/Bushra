@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/io_client.dart';
@@ -158,28 +159,11 @@ class _MyQRScreenState extends State<MyQRScreen> {
 
   Future<bool> _requestStoragePermission(BuildContext context) async {
     if (Platform.isAndroid) {
-      final sdk = int.tryParse(
-        RegExp(r'SDK (\d+)').firstMatch(Platform.version)?.group(1) ?? '33',
-      ) ?? 33;
-
-      if (sdk < 29) {
-        // Android 9 and below
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt < 29) {
         final status = await Permission.storage.request();
         if (!status.isGranted) {
-          _showDenied(context, "Storage permission denied");
-          return false;
-        }
-      } else if (sdk >= 33) {
-        // Android 13+
-        final status = await Permission.photos.request();
-        if (!status.isGranted) {
-          _showDenied(context, "Photos permission denied");
-          return false;
-        }
-      } else {
-        // Android 10–12
-        final status = await Permission.storage.request();
-        if (!status.isGranted) {
+          if (!context.mounted) return false;
           _showDenied(context, "Storage permission denied");
           return false;
         }

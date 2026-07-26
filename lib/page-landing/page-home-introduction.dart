@@ -436,29 +436,12 @@ class _CheckboxDialogState extends State<CheckboxDialog> {
 
   Future<void> _requestPermissions() async {
     if (_isChecked3) await _requestPermission(Permission.location);
-    if (_isChecked2) await _requestPermission2(Permission.storage);
     if (_isChecked1) await _requestPermission(Permission.contacts);
   }
 
   Future<void> _requestPermission(Permission permission) async {
     final status = await permission.request();
     if (status.isPermanentlyDenied) openAppSettings();
-  }
-
-  Future<void> _requestPermission2(Permission permission) async {
-    try {
-      Map<Permission, PermissionStatus> statuses = await [
-        Permission.photos, // or Permission.storage/ManageExternalStorage
-        Permission.storage,
-        Permission.accessMediaLocation,
-      ].request();
-      if (statuses[permission]!.isPermanentlyDenied) {
-        openAppSettings();
-      }
-    } catch (e) {
-      // Handle any errors that might occur during permission request
-      debugPrint('Error requesting permission: $e');
-    }
   }
 
   void showSnackBar(BuildContext context, String message, Color color) {
