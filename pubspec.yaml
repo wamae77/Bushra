@@ -3,7 +3,7 @@ description: "Bushra Mobile Banking Application for Somalia."
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.30+50 # Android
+version: 1.0.30+51 # Android
 #version: 1.0.10+30 # IOS
 
 environment:
