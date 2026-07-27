@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../bill-payment/page-home-bill-payment-main.dart';
 import '../home/page-home-statements.dart';
 import '../home/fund-transfers/page-home-transfer-v2-main.dart';
@@ -189,7 +188,7 @@ class _AccountCardState extends State<AccountCard> {
                         runSpacing: spacing,
                         children: [
                           _buildServiceIcon(
-                            icon: FontAwesomeIcons.moneyBillTransfer,
+                            icon: Icons.swap_horiz,
                             label: AppLocalizations.of(context)!.fundTransfer,
                             isActive: widget.isActiveCard,
                             onTap: () {
