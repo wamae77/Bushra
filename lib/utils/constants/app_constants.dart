@@ -30,6 +30,8 @@ class AppConstants {
   // Others Default Values
   static const String defaultLanguage = 'en';
   static const String defaultPhoneNumber = '252718908314';
+  // Test MSISDN that skips the CBS dedupe on first-time login (stored without the '+' prefix)
+  static const String dedupeBypassPhoneNumber = '252123456789';
   static const String defaultCountryCode = 'SO';
   static const String defaultCountryName = 'Somalia';
   static const String defaultCurrencyCode = 'USD';

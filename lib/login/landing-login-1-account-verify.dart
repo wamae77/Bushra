@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/app_localizations.dart';
 import '../register/dto/customer-verification-details.dart';
 import '../utils/api-login.dart';
+import '../utils/constants/app_constants.dart';
 import '../utils/providers/provider-session.dart';
 import '../widgets/date-picker-custom.dart';
 import '../widgets/dialog-error.dart';
@@ -62,6 +63,21 @@ class _AccountLookupScreenState extends State<AccountLookupScreen> {
       }else{
         phoneNumberFormatted = phone;
       }
+
+      //TODO - TEST NUMBER: SKIP CBS DEDUPE AND CONTINUE THE NORMAL FLOW
+      if (phoneNumberFormatted == AppConstants.dedupeBypassPhoneNumber) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('USER_LOGIN_ID', phoneNumberFormatted);
+        if (!context.mounted) return;
+        Provider.of<SessionProvider>(context, listen: false).setUserLoginId(phoneNumberFormatted);
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.pop(context);
+        showAlertDialogAccountActivation(context);
+        return;
+      }
+
       String cifRequest = account.substring(3, account.length - 3);
       String email = 'test@test.com';
       var responseData = await apiLogin.customerRegistrationStatus(phoneNumberFormatted, account, email, passport, formatDateString(dob), "false", _selectedDocumentValue!);
