@@ -170,8 +170,10 @@ class _MerchantPaymentScreenState extends State<MerchantPaymentScreen> {
             },
             onConfirm: () {
               // Handle confirmation
+              final resolvedTransferType =
+                  (widget.transferType?.toLowerCase() == 'dynamic') ? 'P2MD' : 'P2M';
               Navigator.push(context, MaterialPageRoute(builder: (context) => PinInputQRCodeTransactionScreen(
-                transferType: 'P2M',
+                transferType: resolvedTransferType,
                 transactionReference: referenceGenerator.generateUniqueReference(true),
                 debitAccount: debitIban,
                 debitPhoneNumber: phone,
